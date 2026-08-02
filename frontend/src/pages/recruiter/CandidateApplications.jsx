@@ -12,6 +12,7 @@ import { updateApplicationStatus } from "../../services/applicationService";
 import { getRecruiterApplications } from "../../services/applicationService";
 
 export default function CandidateApplications() {
+  const BASE_URL = "https://multiuser-job-portal.onrender.com";
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -115,7 +116,9 @@ return (
                 <div>
                   {app.resume ? (
                     <a
-                      href={`http://127.0.0.1:8000${app.resume}`}
+                    href={`${BASE_URL}${app.resume}`}
+                      // href={`http://127.0.0.1:8000${app.resume}`}
+
                       target="_blank"
                       rel="noreferrer"
                       className="inline-flex items-center gap-2 text-blue-600"
