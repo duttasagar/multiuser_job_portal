@@ -9,13 +9,15 @@ def send_otp_email(email, otp):
     print("USER:", settings.EMAIL_HOST_USER, flush=True)
 
     try:
-        send_mail(
+        sent = send_mail(
             subject="Email Verification OTP",
             message=f"Your OTP is {otp}",
-            from_email=settings.EMAIL_HOST_USER,
+            from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[email],
             fail_silently=False,
         )
+        print("Emails sent:", sent, flush=True)
+
     except Exception as e:
         print("EMAIL ERROR:", repr(e), flush=True)
         traceback.print_exc()
