@@ -1,16 +1,20 @@
-from django.core.mail import send_mail
 from django.conf import settings
-
+from django.core.mail import send_mail
+import traceback
 
 def send_otp_email(email, otp):
-    send_mail(
-        subject="Email Verification OTP",
-        message=f"Your OTP is {otp}",
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[email],
-        fail_silently=False,
-    )
-
+    try:
+        send_mail(
+            subject="Email Verification OTP",
+            message=f"Your OTP is {otp}",
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[email],
+            fail_silently=False,
+        )
+    except Exception as e:
+        print("EMAIL ERROR:", repr(e))
+        traceback.print_exc()
+        raise
 
 
 
