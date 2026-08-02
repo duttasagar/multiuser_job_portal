@@ -4,6 +4,11 @@ import traceback
 
 def send_otp_email(email, otp):
     try:
+
+        print("HOST:", settings.EMAIL_HOST)
+        print("PORT:", settings.EMAIL_PORT)
+        print("TLS:", settings.EMAIL_USE_TLS)
+        print("USER:", settings.EMAIL_HOST_USER)
         send_mail(
             subject="Email Verification OTP",
             message=f"Your OTP is {otp}",
