@@ -1,6 +1,7 @@
 import { FaEdit, FaTrash, FaGlobe } from "react-icons/fa";
 import { deleteCompany } from "../../services/companyService";
 import toast from "react-hot-toast";
+import api from "../../api/axios";
 
 export default function CompanyTable({
   companies,
@@ -8,7 +9,8 @@ export default function CompanyTable({
   onEdit,
   loadCompanies,
 }) {
-  const BASE_URL = "http://127.0.0.1:8000";
+  // const BASE_URL = "http://127.0.0.1:8000";
+  const BASE_URL = api.defaults.baseURL;
 
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm(
@@ -90,7 +92,8 @@ if (companies.length === 0) {
                   <div className="flex items-center gap-4">
                     {company.logo ? (
                       <img
-                        src={`http://127.0.0.1:8000${company.logo}`}
+                        // src={`http://127.0.0.1:8000${company.logo}`}
+                        src={`${BASE_URL}${company.logo}`}
                         alt={company.company_name}
                         className="w-16 h-16 rounded-xl object-cover border"
                         onError={(e) => {

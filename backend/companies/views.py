@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from .models import Company
 from .serializers import CompanySerializer
@@ -10,6 +11,7 @@ from .permissions import IsRecruiter
 
 class CompanyListCreateView(APIView):
     permission_classes = [IsAuthenticated, IsRecruiter]
+    parser_classes = [ MultiPartParser, FormParser, ]
 
     def get(self, request):
         companies = Company.objects.filter(recruiter=request.user)
@@ -40,6 +42,7 @@ class CompanyListCreateView(APIView):
 
 class CompanyDetailView(APIView):
     permission_classes = [IsAuthenticated, IsRecruiter]
+    parser_classes = [ MultiPartParser, FormParser, ]
 
     def get_object(self, pk, user):
         try:
