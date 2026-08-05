@@ -9,7 +9,8 @@ import {
 } from "../../services/recruiterProfileService";
 
 export default function RecruiterProfile() {
-  const BASE_URL = api.defaults.baseURL;
+  // const BASE_URL = api.defaults.baseURL;
+  const BASE_URL = api.defaults.baseURL.replace(/\/$/, "");
   const user = JSON.parse(localStorage.getItem("user"));
 
   const [loading, setLoading] = useState(true);
@@ -37,6 +38,10 @@ export default function RecruiterProfile() {
   const loadProfile = async () => {
     try {
       const data = await getRecruiterProfile();
+
+      console.log("PROFILE DATA:", data);
+      console.log("PROFILE IMAGE:", data.profile_image);
+      console.log("BASE URL:", BASE_URL);
 
       setProfileExists(true);
 
@@ -124,12 +129,28 @@ export default function RecruiterProfile() {
     return <div className="text-center py-10">Loading...</div>;
   }
 
-  const imagePreview =
-    formData.profile_image instanceof File
-      ? URL.createObjectURL(formData.profile_image)
-      : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-          formData.full_name || user?.username || "Recruiter",
-        )}&size=300&background=f3f4f6&color=2563eb`;
+  // const imagePreview =
+  //   formData.profile_image instanceof File
+  //     ? URL.createObjectURL(formData.profile_image)
+  //     : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+  //         formData.full_name || user?.username || "Recruiter",
+  //       )}&size=300&background=f3f4f6&color=2563eb`;
+
+
+
+  const getProfileImageUrl = () => {
+  if (formData.profile_image instanceof File) {
+    return URL.createObjectURL(formData.profile_image);
+  }
+
+  if (formData.profile_image) {
+    return `${BASE_URL}${formData.profile_image}`;
+  }
+
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    formData.full_name || user?.username || "Recruiter"
+  )}&background=2563eb&color=ffffff&size=300`;
+};
 
   return (
     <div className="max-w-4xl mx-auto px-2">
@@ -160,7 +181,7 @@ to-white
 
             <div className="flex justify-center -mt-12">
               <div className="relative">
-                <img
+                {/* <img
                   alt="Profile"
                   className="
   w-28
@@ -180,7 +201,31 @@ to-white
                             formData.full_name || user?.username || "User",
                           )}&background=2563eb&color=ffffff&size=300`
                   }
-                />
+                /> */}
+
+
+
+
+                <img
+  alt="Profile"
+  className="
+    w-28
+    h-28
+    rounded-full
+    border-4
+    border-white
+    shadow-md
+    object-cover
+  "
+  src={getProfileImageUrl()}
+  onError={(e) => {
+    console.log("Image failed:", e.target.src);
+
+    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      formData.full_name || user?.username || "Recruiter"
+    )}&background=2563eb&color=ffffff&size=300`;
+  }}
+/>
                 {editing && (
                   <label
                     className="
