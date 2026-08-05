@@ -10,8 +10,7 @@ export default function CompanyTable({
   loadCompanies,
 }) {
   // const BASE_URL = "http://127.0.0.1:8000";
-  const BASE_URL = api.defaults.baseURL;
-
+  const BASE_URL = api.defaults.baseURL.replace(/\/$/, "");
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this company?",
@@ -42,23 +41,23 @@ export default function CompanyTable({
     );
   }
 
-if (companies.length === 0) {
-  return (
-    <div className="bg-white rounded-xl shadow p-12 text-center">
-      <div className="w-20 h-20 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-3xl">
-        🏢
+  if (companies.length === 0) {
+    return (
+      <div className="bg-white rounded-xl shadow p-12 text-center">
+        <div className="w-20 h-20 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-3xl">
+          🏢
+        </div>
+
+        <h2 className="mt-5 text-2xl font-semibold text-slate-700">
+          No Companies Found
+        </h2>
+
+        <p className="mt-2 text-slate-500">
+          Click <b>Add Company</b> to create your first company.
+        </p>
       </div>
-
-      <h2 className="mt-5 text-2xl font-semibold text-slate-700">
-        No Companies Found
-      </h2>
-
-      <p className="mt-2 text-slate-500">
-        Click <b>Add Company</b> to create your first company.
-      </p>
-    </div>
-  );
-}
+    );
+  }
   return (
     <div className="bg-white rounded-2xl shadow border border-slate-200 overflow-hidden">
       <div className="overflow-x-auto">
@@ -92,12 +91,17 @@ if (companies.length === 0) {
                   <div className="flex items-center gap-4">
                     {company.logo ? (
                       <img
-                        // src={`http://127.0.0.1:8000${company.logo}`}
-                        src={`${BASE_URL}${company.logo}`}
+                        src={
+                          company.logo.startsWith("http")
+                            ? company.logo
+                            : `${BASE_URL}${company.logo}`
+                        }
                         alt={company.company_name}
                         className="w-16 h-16 rounded-xl object-cover border"
                         onError={(e) => {
-                          console.log("Failed:", e.target.src);
+                          e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                            company.company_name,
+                          )}&size=200&background=f1f5f9&color=475569`;
                         }}
                       />
                     ) : (
