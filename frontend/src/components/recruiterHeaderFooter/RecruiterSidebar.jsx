@@ -13,8 +13,7 @@ import {
 } from "react-icons/fa";
 
 export default function RecruiterSidebar() {
-  const BASE_URL = api.defaults.baseURL;
-
+const BASE_URL = api.defaults.baseURL.replace(/\/$/, "");
   const user = JSON.parse(localStorage.getItem("user")) || {};
 
   const [profileImage, setProfileImage] = useState(null);
@@ -31,23 +30,48 @@ export default function RecruiterSidebar() {
         : "text-slate-600 hover:bg-slate-100 hover:text-blue-600"
     }`;
 
+  // useEffect(() => {
+  //   const loadProfile = async () => {
+  //     try {
+  //       const data = await getRecruiterProfile();
+
+  //       setProfileName(data.full_name || user.username);
+
+  //       if (data.profile_image) {
+  //         setProfileImage(`${BASE_URL}${data.profile_image}`);
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+
+  //   loadProfile();
+  // }, []);
+
+
   useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        const data = await getRecruiterProfile();
+  const loadProfile = async () => {
+    try {
+      const data = await getRecruiterProfile();
 
-        setProfileName(data.full_name || user.username);
+      setProfileName(data.full_name || user.username || "Recruiter");
 
-        if (data.profile_image) {
-          setProfileImage(`${BASE_URL}${data.profile_image}`);
-        }
-      } catch (error) {
-        console.log(error);
+      if (data.profile_image) {
+        const imageUrl = data.profile_image.startsWith("http")
+          ? data.profile_image
+          : `${BASE_URL}${data.profile_image}`;
+
+        console.log("Sidebar profile image:", imageUrl);
+
+        setProfileImage(imageUrl);
       }
-    };
+    } catch (error) {
+      console.log("Failed to load recruiter profile:", error);
+    }
+  };
 
-    loadProfile();
-  }, []);
+  loadProfile();
+}, []);
 
   const menus = [
     {
@@ -135,7 +159,7 @@ export default function RecruiterSidebar() {
 
         {/* Profile */}
         <div className="py-8 flex flex-col items-center border-b border-slate-200">
-          <img
+          {/* <img
             src={
               profileImage ||
               `https://ui-avatars.com/api/?name=${encodeURIComponent(
@@ -144,7 +168,24 @@ export default function RecruiterSidebar() {
             }
             alt="Profile"
             className="w-24 h-24 rounded-full object-cover border-4 border-blue-100"
-          />
+          /> */}
+
+
+          <img
+  src={
+    profileImage ||
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      profileName
+    )}&size=200`
+  }
+  alt="Profile"
+  onError={(e) => {
+    e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      profileName
+    )}&size=200`;
+  }}
+  className="w-24 h-24 rounded-full object-cover border-4 border-blue-100"
+/>
 
           <h2 className="mt-4 text-xl font-semibold text-slate-800 text-center px-4">
             {profileName}
